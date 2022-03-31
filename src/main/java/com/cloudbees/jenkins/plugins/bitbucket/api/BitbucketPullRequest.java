@@ -50,6 +50,10 @@ public interface BitbucketPullRequest {
 
     String getTitle();
 
+    String getDescription();
+
+    String getState();
+
     String getLink();
 
     /**

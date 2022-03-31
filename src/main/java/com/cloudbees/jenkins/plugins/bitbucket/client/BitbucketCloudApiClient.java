@@ -363,6 +363,7 @@ public class BitbucketCloudApiClient implements BitbucketApi {
                 .set("id", id)
                 .expand();
         String response = getRequest(url);
+        LOGGER.fine("got PR:" + response);
         try {
             BitbucketPullRequestValue pr = JsonParser.toJava(response, BitbucketPullRequestValue.class);
             setupClosureForPRBranch(pr);
@@ -919,13 +920,15 @@ public class BitbucketCloudApiClient implements BitbucketApi {
         }
     }
 
-    private String getRequest(String path) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected String getRequest(String path) throws IOException, InterruptedException {
         try (InputStream inputStream = getRequestAsInputStream(path)){
             return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         }
     }
 
-    private BufferedImage getImageRequest(String path) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected BufferedImage getImageRequest(String path) throws IOException, InterruptedException {
         try (InputStream inputStream = getRequestAsInputStream(path)) {
             int length = MAX_AVATAR_LENGTH;
             BufferedInputStream bis = new BufferedInputStream(inputStream, length);
@@ -934,7 +937,8 @@ public class BitbucketCloudApiClient implements BitbucketApi {
         }
     }
 
-    private int headRequestStatus(String path) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected int headRequestStatus(String path) throws IOException, InterruptedException {
         HttpHead httpHead = new HttpHead(path);
         try(CloseableHttpResponse response = executeMethod(httpHead)) {
             EntityUtils.consume(response.getEntity());
@@ -946,7 +950,8 @@ public class BitbucketCloudApiClient implements BitbucketApi {
         }
     }
 
-    private void deleteRequest(String path) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected void deleteRequest(String path) throws IOException, InterruptedException {
         HttpDelete httppost = new HttpDelete(path);
         try(CloseableHttpResponse response =  executeMethod(httppost)) {
             EntityUtils.consume(response.getEntity());
@@ -965,7 +970,8 @@ public class BitbucketCloudApiClient implements BitbucketApi {
         }
     }
 
-    private String doRequest(HttpRequestBase httppost) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected String doRequest(HttpRequestBase httppost) throws IOException, InterruptedException {
         try(CloseableHttpResponse response =  executeMethod(httppost)) {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT) {
                 EntityUtils.consume(response.getEntity());
@@ -975,7 +981,8 @@ public class BitbucketCloudApiClient implements BitbucketApi {
             String content = getResponseContent(response);
             EntityUtils.consume(response.getEntity());
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK && response.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED) {
-                throw new BitbucketRequestException(response.getStatusLine().getStatusCode(), "HTTP request error. Status: " + response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase() + ".\n" + response);
+                LOGGER.fine("BitbucketRequest error response:" + content);
+                throw new BitbucketRequestException(response.getStatusLine().getStatusCode(), "HTTP request error. Status: " + response.getStatusLine().getStatusCode() + ": " + response.getStatusLine().getReasonPhrase() + ".\n" + response, content);
             }
             return content;
         } catch (BitbucketRequestException e) {
@@ -1016,19 +1023,23 @@ public class BitbucketCloudApiClient implements BitbucketApi {
         return content;
     }
 
-    private String putRequest(String path, String content) throws IOException, InterruptedException  {
+    @Restricted(ProtectedExternally.class)
+    protected String putRequest(String path, String content) throws IOException, InterruptedException  {
         HttpPut request = new HttpPut(path);
         request.setEntity(new StringEntity(content, ContentType.create("application/json", "UTF-8")));
         return doRequest(request);
     }
 
-    private String postRequest(String path, String content) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected String postRequest(String path, String content) throws IOException, InterruptedException {
         HttpPost httppost = new HttpPost(path);
+        LOGGER.log(Level.FINE, "posting request {0}, with content: {1}", new Object[] {path, content});
         httppost.setEntity(new StringEntity(content, ContentType.create("application/json", "UTF-8")));
         return doRequest(httppost);
     }
 
-    private String postRequest(String path, List<? extends NameValuePair> params) throws IOException, InterruptedException {
+    @Restricted(ProtectedExternally.class)
+    protected String postRequest(String path, List<? extends NameValuePair> params) throws IOException, InterruptedException {
         HttpPost httppost = new HttpPost(path);
         httppost.setEntity(new UrlEncodedFormEntity(params));
         return doRequest(httppost);
