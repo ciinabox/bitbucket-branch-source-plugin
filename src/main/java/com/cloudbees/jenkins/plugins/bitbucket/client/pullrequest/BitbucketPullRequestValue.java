@@ -35,6 +35,8 @@ public class BitbucketPullRequestValue implements BitbucketPullRequest {
     private BitbucketPullRequestValueRepository source;
     private String id;
     private String title;
+    private String description;
+    private String state;
 
     private Links links;
 
@@ -75,6 +77,16 @@ public class BitbucketPullRequestValue implements BitbucketPullRequest {
     }
 
     @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public String getState() {
+        return state;
+    }
+
+    @Override
     public String getLink() {
         return links.html.href;
     }
@@ -97,6 +109,14 @@ public class BitbucketPullRequestValue implements BitbucketPullRequest {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void seDescription(String description) {
+        this.description = description;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public void setLinks(Links link) {

@@ -48,6 +48,10 @@ public class BitbucketServerPullRequest implements BitbucketPullRequest {
 
     private String title;
 
+    private String description;
+
+    private String state;
+
     private String link;
 
     private String authorLogin;
@@ -94,6 +98,16 @@ public class BitbucketServerPullRequest implements BitbucketPullRequest {
     @Override
     public String getTitle() {
         return this.title;
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public String getState() {
+        return this.state;
     }
 
     // TODO: unmapped, need proper JsonProperty in the field

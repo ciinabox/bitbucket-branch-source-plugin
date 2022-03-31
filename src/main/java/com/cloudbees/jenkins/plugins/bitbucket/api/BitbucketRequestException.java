@@ -28,19 +28,35 @@ import java.io.IOException;
 public class BitbucketRequestException extends IOException {
 
     private final int httpCode;
+    private final String errorResponse;
 
     public BitbucketRequestException(int httpCode, String message) {
-        super(message);
-        this.httpCode = httpCode;
+        this(httpCode, message, null, null);
     }
 
     public BitbucketRequestException(int httpCode, String message, Throwable t) {
+        this(httpCode, message, null, null);
+    }
+
+    public BitbucketRequestException(int httpCode, String message, String errorResponse) {
+        this(httpCode, message, errorResponse, null);
+    }
+
+    public BitbucketRequestException(int httpCode, String message, String errorResponse, Throwable t) {
         super(message, t);
         this.httpCode = httpCode;
+        this.errorResponse = errorResponse;
     }
 
     public int getHttpCode() {
         return httpCode;
+    }
+
+    public String getErrorResponse() {
+        if(Objects.isNull(errorResponse)) {
+            return "";
+        }
+        return this.errorResponse;
     }
 
     private static final long serialVersionUID = 1L;
