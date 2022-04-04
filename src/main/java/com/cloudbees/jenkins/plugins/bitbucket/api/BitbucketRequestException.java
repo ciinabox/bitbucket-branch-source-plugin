@@ -53,7 +53,7 @@ public class BitbucketRequestException extends IOException {
     }
 
     public String getErrorResponse() {
-        if(Objects.isNull(errorResponse)) {
+        if(errorResponse == null) {
             return "";
         }
         return this.errorResponse;
