@@ -226,5 +226,16 @@
       </plugin>
     </plugins>
   </build>
-
+  <distributionManagement>
+      <repository>
+          <id>github</id>
+          <name>GitHub base2Services Maven Repo</name>
+          <url>https://maven.pkg.github.com/ciinabox/bitbucket-branch-source-plugin</url>
+      </repository>
+      <snapshotRepository>
+          <id>github-snapshots</id>
+          <name>GitHub base2Services Maven Repo</name>
+          <url>https://maven.pkg.github.com/ciinabox/bitbucket-branch-source-plugin</url>
+      </snapshotRepository>
+  </distributionManagement>
 </project>

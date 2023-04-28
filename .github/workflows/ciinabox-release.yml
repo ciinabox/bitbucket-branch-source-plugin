@@ -10,6 +10,9 @@ jobs:
   build:
     name: Ciinabox GitOps Vendored - cloudbees-bitbucket-branch-source
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Check out
         uses: actions/checkout@v2.3.4
@@ -30,7 +33,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build with Maven
-        run: mvn -B package -Dchangelist=${{ steps.get_tag_name.outputs.VERSION }}
+        run: mvn -B deploy -Dchangelist=${{ steps.get_tag_name.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
